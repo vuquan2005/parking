@@ -93,7 +93,8 @@ class MotorBase
 {
 public:
     const char *code;      /**< command prefix for this motor, e.g. "11N" */
-    uint8_t speed;         /**< motor speed (PWM duty cycle 0..255) */
+    uint8_t speedForward;  /**< motor speed for forward direction (0..255) */
+    uint8_t speedBackward; /**< motor speed for backward direction (0..255) */
     DirectionCodes dirs;   /**< direction letters assigned to this motor */
     uint32_t maxRunTimeMs; /**< maximum allowed run duration before auto-stop */
     uint32_t runStartMs;   /**< millis() timestamp when motor last started */
@@ -101,7 +102,10 @@ public:
     char activeDirection;  /**< currently active direction code */
 
     MotorBase(const char *code_, uint8_t speed_, DirectionCodes dirs_, uint32_t maxRunTimeMs_ = 0)
-        : code(code_), speed(speed_), dirs(dirs_), maxRunTimeMs(maxRunTimeMs_), runStartMs(0), isRunning(false), activeDirection(dirs_.stop) {}
+        : code(code_), speedForward(speed_), speedBackward(speed_), dirs(dirs_), maxRunTimeMs(maxRunTimeMs_), runStartMs(0), isRunning(false), activeDirection(dirs_.stop) {}
+
+    MotorBase(const char *code_, uint8_t speedForward_, uint8_t speedBackward_, DirectionCodes dirs_, uint32_t maxRunTimeMs_ = 0)
+        : code(code_), speedForward(speedForward_), speedBackward(speedBackward_), dirs(dirs_), maxRunTimeMs(maxRunTimeMs_), runStartMs(0), isRunning(false), activeDirection(dirs_.stop) {}
 
     /**
      * @brief Initialize the motor hardware.
@@ -224,6 +228,9 @@ public:
     MotorGPIO(const char *code_, uint8_t pinA_, uint8_t pinB_, uint8_t speed_, DirectionCodes dirs_, uint32_t maxRunTimeMs_ = 0)
         : MotorBase(code_, speed_, dirs_, maxRunTimeMs_), pinA(pinA_), pinB(pinB_) {}
 
+    MotorGPIO(const char *code_, uint8_t pinA_, uint8_t pinB_, uint8_t speedForward_, uint8_t speedBackward_, DirectionCodes dirs_, uint32_t maxRunTimeMs_ = 0)
+        : MotorBase(code_, speedForward_, speedBackward_, dirs_, maxRunTimeMs_), pinA(pinA_), pinB(pinB_) {}
+
     void begin() override
     {
         pinMode(pinA, OUTPUT);
@@ -236,13 +243,13 @@ protected:
     {
         if (direction == dirs.forward)
         {
-            analogWrite(pinA, speed);
+            analogWrite(pinA, speedForward);
             analogWrite(pinB, 0);
         }
         else if (direction == dirs.backward)
         {
             analogWrite(pinA, 0);
-            analogWrite(pinB, speed);
+            analogWrite(pinB, speedBackward);
         }
         else
         {
@@ -267,6 +274,9 @@ public:
     MotorPCA9685(const char *code_, uint8_t chA_, uint8_t chB_, uint8_t speed_, DirectionCodes dirs_, uint32_t maxRunTimeMs_ = 0)
         : MotorBase(code_, speed_, dirs_, maxRunTimeMs_), chA(chA_), chB(chB_) {}
 
+    MotorPCA9685(const char *code_, uint8_t chA_, uint8_t chB_, uint8_t speedForward_, uint8_t speedBackward_, DirectionCodes dirs_, uint32_t maxRunTimeMs_ = 0)
+        : MotorBase(code_, speedForward_, speedBackward_, dirs_, maxRunTimeMs_), chA(chA_), chB(chB_) {}
+
     void begin() override {}
 
 protected:
@@ -274,13 +284,13 @@ protected:
     {
         if (direction == dirs.forward)
         {
-            pcaSetPWM(chA, speed);
+            pcaSetPWM(chA, speedForward);
             pcaSetPWM(chB, 0);
         }
         else if (direction == dirs.backward)
         {
             pcaSetPWM(chA, 0);
-            pcaSetPWM(chB, speed);
+            pcaSetPWM(chB, speedBackward);
         }
         else
         {
@@ -328,11 +338,11 @@ const DirectionCodes DIR_N = {'P', 'T', 'S'};
  */
 const DirectionCodes DIR_K = {'U', 'D', 'S'};
 
-MotorPCA9685 motor1("11N", 0, 1, 100, DIR_N, MAX_RUN_TIME_MS_N); //
+MotorPCA9685 motor1("11N", 0, 1, 100, DIR_N, MAX_RUN_TIME_MS_N);
 MotorPCA9685 motor2("12N", 2, 3, 110, DIR_N, MAX_RUN_TIME_MS_N);
 MotorPCA9685 motor3("13N", 4, 5, 135, DIR_N, MAX_RUN_TIME_MS_N);
 MotorPCA9685 motor4("21N", 6, 7, 120, DIR_N, MAX_RUN_TIME_MS_N);
-MotorPCA9685 motor5("22N", 8, 9, 140, DIR_N, MAX_RUN_TIME_MS_N); //Sang trai nhanh
+MotorPCA9685 motor5("22N", 8, 9, 140, 120, DIR_N, MAX_RUN_TIME_MS_N);
 MotorPCA9685 motor6("23N", 10, 11, 130, DIR_N, MAX_RUN_TIME_MS_N);
 
 MotorGPIO motor7("21K", 32, 33, toc_do_keo, DIR_K, MAX_RUN_TIME_MS_K);
