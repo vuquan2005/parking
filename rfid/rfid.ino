@@ -76,18 +76,22 @@ String createPayload(const String& uidString) {
   return payload;
 }
 
+static uint32_t packetId = 0;
+
 /**
  * @brief Send a UID payload with retry logic.
  * @param payload The payload string to send.
  * @param retries The number of retry attempts.
  * @param intervalMs The interval between retries in milliseconds.
- * Payload format: "UID|<UID_STRING>|<CHECKSUM>|<ATTEMPT>"
+ * Payload format: "UID|<UID_STRING>|<CHECKSUM>|<COUNTER>"
  */
 void sendUidWithRetries(const String& payload, uint8_t retries = 1,
                         uint16_t intervalMs = 1000) {
   Serial1.println();
+  packetId++;
+
   for (uint8_t attempt = 0; attempt < retries; attempt++) {
-    Serial1.println(payload+ "|" + String(attempt + 1));
+    Serial1.println(payload + "|" + String(packetId));
     if (attempt + 1 < retries) {
       delay(intervalMs);
     }
