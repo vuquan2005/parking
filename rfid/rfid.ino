@@ -53,6 +53,12 @@ uint8_t calculateUidChecksum(const String& uidString) {
   return checksum;
 }
 
+/**
+ * @brief Create a payload string for the given UID.
+ * @param uidString The UID string.
+ * @return The formatted payload string.
+ * Payload format: "UID|<UID_STRING>|<CHECKSUM>"
+ */
 String createPayload(const String& uidString) {
   uint8_t checksum = calculateUidChecksum(uidString);
   String checksumString = String(checksum, HEX);
@@ -70,11 +76,18 @@ String createPayload(const String& uidString) {
   return payload;
 }
 
+/**
+ * @brief Send a UID payload with retry logic.
+ * @param payload The payload string to send.
+ * @param retries The number of retry attempts.
+ * @param intervalMs The interval between retries in milliseconds.
+ * Payload format: "UID|<UID_STRING>|<CHECKSUM>|<ATTEMPT>"
+ */
 void sendUidWithRetries(const String& payload, uint8_t retries = 1,
                         uint16_t intervalMs = 1000) {
   Serial1.println();
   for (uint8_t attempt = 0; attempt < retries; attempt++) {
-    Serial1.println(payload);
+    Serial1.println(payload+ "|" + String(attempt + 1));
     if (attempt + 1 < retries) {
       delay(intervalMs);
     }
