@@ -329,12 +329,12 @@ const DirectionCodes DIR_N = {'P', 'T', 'S'};
  */
 const DirectionCodes DIR_K = {'U', 'D', 'S'};
 
-MotorPCA9685 motor1("11N", 0, 1, toc_do_ngang_tang_1, DIR_N, MAX_RUN_TIME_MS_N);
-MotorPCA9685 motor2("12N", 2, 3, toc_do_ngang_tang_1, DIR_N, MAX_RUN_TIME_MS_N);
-MotorPCA9685 motor3("13N", 4, 5, toc_do_ngang_tang_1, DIR_N, MAX_RUN_TIME_MS_N);
-MotorPCA9685 motor4("21N", 6, 7, toc_do_ngang_tang_2, DIR_N, MAX_RUN_TIME_MS_N);
-MotorPCA9685 motor5("22N", 8, 9, toc_do_ngang_tang_2, DIR_N, MAX_RUN_TIME_MS_N);
-MotorPCA9685 motor6("23N", 10, 11, toc_do_ngang_tang_2, DIR_N, MAX_RUN_TIME_MS_N);
+MotorPCA9685 motor1("11N", 0, 1, 100, DIR_N, MAX_RUN_TIME_MS_N); //
+MotorPCA9685 motor2("12N", 2, 3, 110, DIR_N, MAX_RUN_TIME_MS_N);
+MotorPCA9685 motor3("13N", 4, 5, 135, DIR_N, MAX_RUN_TIME_MS_N);
+MotorPCA9685 motor4("21N", 6, 7, 120, DIR_N, MAX_RUN_TIME_MS_N);
+MotorPCA9685 motor5("22N", 8, 9, 140, DIR_N, MAX_RUN_TIME_MS_N); //Sang trai nhanh
+MotorPCA9685 motor6("23N", 10, 11, 130, DIR_N, MAX_RUN_TIME_MS_N);
 
 MotorGPIO motor7("21K", 32, 33, toc_do_keo, DIR_K, MAX_RUN_TIME_MS_K);
 MotorGPIO motor8("22K", 25, 26, toc_do_keo, DIR_K, MAX_RUN_TIME_MS_K);
