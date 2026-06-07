@@ -1,5 +1,5 @@
-#include <SPI.h>
 #include <MFRC522.h>
+#include <SPI.h>
 
 // ESP8266 pin definitions for RC522
 // RST_PIN: D3 (GPIO0) - reset line for RC522 module
@@ -13,17 +13,8 @@ static const uint32_t SERIAL_BAUD = 115200;
 static const uint8_t AUTO_BTN_PIN = 4;
 
 const String presetRfids[10] = {
-  "04AABBCCDD",
-  "05BBCCDDEE",
-  "06CCDDEEFF",
-  "07DDEEFF00",
-  "08EEFF0011",
-  "09FF001122",
-  "0A00112233",
-  "0B11223344",
-  "0C22334455",
-  "0D33445566"
-};
+    "04AABBCCDD", "05BBCCDDEE", "06CCDDEEFF", "07DDEEFF00", "08EEFF0011",
+    "09FF001122", "0A00112233", "0B11223344", "0C22334455", "0D33445566"};
 
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 
@@ -39,7 +30,7 @@ void setupReader() {
   mfrc522.PCD_Init();
 }
 
-String formatUid(const MFRC522::Uid &uid) {
+String formatUid(const MFRC522::Uid& uid) {
   String result;
   result.reserve(uid.size * 2 + 1);
 
@@ -54,7 +45,7 @@ String formatUid(const MFRC522::Uid &uid) {
   return result;
 }
 
-uint8_t calculateUidChecksum(const String &uidString) {
+uint8_t calculateUidChecksum(const String& uidString) {
   uint8_t checksum = 0;
   for (size_t i = 0; i < uidString.length(); i++) {
     checksum += uidString[i];
@@ -62,7 +53,7 @@ uint8_t calculateUidChecksum(const String &uidString) {
   return checksum;
 }
 
-String createPayload(const String &uidString) {
+String createPayload(const String& uidString) {
   uint8_t checksum = calculateUidChecksum(uidString);
   String checksumString = String(checksum, HEX);
   checksumString.toUpperCase();
@@ -79,7 +70,8 @@ String createPayload(const String &uidString) {
   return payload;
 }
 
-void sendUidWithRetries(const String &payload, uint8_t retries = 1, uint16_t intervalMs = 1000) {
+void sendUidWithRetries(const String& payload, uint8_t retries = 1,
+                        uint16_t intervalMs = 1000) {
   for (uint8_t attempt = 0; attempt < retries; attempt++) {
     Serial1.println(payload);
     if (attempt + 1 < retries) {
@@ -101,13 +93,11 @@ void setup() {
 }
 
 void loop() {
-  if (!mfrc522.PICC_IsNewCardPresent()) {
-    return;
-  }
+  serialPrintln();
 
-  if (!mfrc522.PICC_ReadCardSerial()) {
-    return;
-  }
+  if (!mfrc522.PICC_IsNewCardPresent()) return;
+
+  if (!mfrc522.PICC_ReadCardSerial()) return;
 
   String uidString = formatUid(mfrc522.uid);
   String payload = createPayload(uidString);
@@ -122,8 +112,7 @@ void loop() {
 
   delay(3000);
 
-  if (true)
-  return;
+  if (true) return;
 
   // Auto
   unsigned long currentMillis = millis();
