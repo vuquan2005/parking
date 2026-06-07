@@ -93,14 +93,15 @@ class MotorBase
 {
 public:
     const char *code;      /**< command prefix for this motor, e.g. "11N" */
+    uint8_t speed;         /**< motor speed (PWM duty cycle 0..255) */
     DirectionCodes dirs;   /**< direction letters assigned to this motor */
     uint32_t maxRunTimeMs; /**< maximum allowed run duration before auto-stop */
     uint32_t runStartMs;   /**< millis() timestamp when motor last started */
     bool isRunning;        /**< true if motor is currently running */
     char activeDirection;  /**< currently active direction code */
 
-    MotorBase(const char *code_, DirectionCodes dirs_, uint32_t maxRunTimeMs_ = 0)
-        : code(code_), dirs(dirs_), maxRunTimeMs(maxRunTimeMs_), runStartMs(0), isRunning(false), activeDirection(dirs_.stop) {}
+    MotorBase(const char *code_, uint8_t speed_, DirectionCodes dirs_, uint32_t maxRunTimeMs_ = 0)
+        : code(code_), speed(speed_), dirs(dirs_), maxRunTimeMs(maxRunTimeMs_), runStartMs(0), isRunning(false), activeDirection(dirs_.stop) {}
 
     /**
      * @brief Initialize the motor hardware.
@@ -213,7 +214,6 @@ class MotorGPIO : public MotorBase
 public:
     uint8_t pinA;
     uint8_t pinB;
-    uint8_t speed;
 
     /**
      * @brief GPIO-based motor using two output pins.
@@ -222,7 +222,7 @@ public:
      * PWM while the other is held LOW to set direction.
      */
     MotorGPIO(const char *code_, uint8_t pinA_, uint8_t pinB_, uint8_t speed_, DirectionCodes dirs_, uint32_t maxRunTimeMs_ = 0)
-        : MotorBase(code_, dirs_, maxRunTimeMs_), pinA(pinA_), pinB(pinB_), speed(speed_) {}
+        : MotorBase(code_, speed_, dirs_, maxRunTimeMs_), pinA(pinA_), pinB(pinB_) {}
 
     void begin() override
     {
@@ -257,7 +257,6 @@ class MotorPCA9685 : public MotorBase
 public:
     uint8_t chA;
     uint8_t chB;
-    uint8_t speed;
 
     /**
      * @brief PCA9685-driven motor channel pair.
@@ -266,7 +265,7 @@ public:
      * disabling the other.
      */
     MotorPCA9685(const char *code_, uint8_t chA_, uint8_t chB_, uint8_t speed_, DirectionCodes dirs_, uint32_t maxRunTimeMs_ = 0)
-        : MotorBase(code_, dirs_, maxRunTimeMs_), chA(chA_), chB(chB_), speed(speed_) {}
+        : MotorBase(code_, speed_, dirs_, maxRunTimeMs_), chA(chA_), chB(chB_) {}
 
     void begin() override {}
 
