@@ -72,12 +72,14 @@ String createPayload(const String& uidString) {
 
 void sendUidWithRetries(const String& payload, uint8_t retries = 1,
                         uint16_t intervalMs = 1000) {
+  Serial1.println();
   for (uint8_t attempt = 0; attempt < retries; attempt++) {
     Serial1.println(payload);
     if (attempt + 1 < retries) {
       delay(intervalMs);
     }
   }
+  Serial1.println();
 }
 
 void setup() {
@@ -93,7 +95,7 @@ void setup() {
 }
 
 void loop() {
-  serialPrintln();
+  Serial1.println();
 
   if (!mfrc522.PICC_IsNewCardPresent()) return;
 
