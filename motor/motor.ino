@@ -318,7 +318,7 @@ int toc_do_keo = 255;
  *
  * Used to auto-stop winch motors after 10 seconds.
  */
-#define MAX_RUN_TIME_MS_K 10000
+#define MAX_RUN_TIME_MS_K 15000
 
 /**
  * @brief Direction codes for lifting motors.
