@@ -86,7 +86,7 @@ static uint32_t packetId = 0;
  * Payload format: "UID|<UID_STRING>|<CHECKSUM>|<COUNTER>"
  */
 void sendUidWithRetries(const String& payload, uint8_t retries = 1,
-                        uint16_t intervalMs = 1000) {
+                        uint16_t intervalMs = 500) {
   Serial1.println();
   packetId++;
 
@@ -123,13 +123,13 @@ void loop() {
 
   Serial.print(F("Đã đọc thẻ có mã: "));
   Serial.println(uidString);
-  sendUidWithRetries(payload, 1, 1000);
+  sendUidWithRetries(payload, 2, 500);
 
   // Gửi lệnh HALT đến thẻ để tránh đọc liên tục khi thẻ vẫn nằm trong vùng đọc
   mfrc522.PICC_HaltA();
   mfrc522.PCD_StopCrypto1();
 
-  delay(3000);
+  delay(2000);
 
   if (true) return;
 
