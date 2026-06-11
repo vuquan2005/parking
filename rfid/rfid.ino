@@ -87,7 +87,7 @@ void sendUidWithRetries(const String& payload, uint8_t retries = 1,
   packetId++;
 
   for (uint8_t attempt = 0; attempt < retries; attempt++) {
-    Serial1.println(payload + "|" + String(packetId) + "|");
+    Serial1.println(payload + "|" + String(packetId));
     if (attempt + 1 < retries) {
       delay(intervalMs);
     }
