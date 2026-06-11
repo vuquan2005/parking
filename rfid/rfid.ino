@@ -12,10 +12,6 @@ static const uint32_t SERIAL_BAUD = 115200;
 
 static const uint8_t AUTO_BTN_PIN = 4;
 
-const String presetRfids[10] = {
-    "04AABBCCDD", "05BBCCDDEE", "06CCDDEEFF", "07DDEEFF00", "08EEFF0011",
-    "09FF001122", "0A00112233", "0B11223344", "0C22334455", "0D33445566"};
-
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 
 void setupReader() {
@@ -125,25 +121,8 @@ void loop() {
   Serial.println(uidString);
   sendUidWithRetries(payload, 2, 500, false);
 
-  // Gửi lệnh HALT đến thẻ để tránh đọc liên tục khi thẻ vẫn nằm trong vùng đọc
   mfrc522.PICC_HaltA();
   mfrc522.PCD_StopCrypto1();
 
-  delay(2000);
-
-  if (true) return;
-
-  // Auto
-  unsigned long currentMillis = millis();
-  static unsigned long lastAutoSend = 0;
-
-  if (currentMillis - lastAutoSend >= 100000) {
-    lastAutoSend = currentMillis;
-    uint8_t index = random(0, 10);
-    String autoPayload = createPayload(presetRfids[index]);
-
-    Serial.print(F("Gửi tự động mã RFID: "));
-    Serial.println(presetRfids[index]);
-    sendUidWithRetries(autoPayload, 1, 1000, true);
-  }
+  delay(1000);
 }
