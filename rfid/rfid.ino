@@ -79,7 +79,7 @@ static uint32_t packetId = 0;
  * @param payload The payload string to send.
  * @param retries The number of retry attempts.
  * @param intervalMs The interval between retries in milliseconds.
- * Payload format: "UID|<UID_STRING>|<CHECKSUM>|<COUNTER>|<IS_AUTO>"
+ * Payload format: "UID|<UID_STRING>|<CHECKSUM>|<COUNTER>|"
  */
 void sendUidWithRetries(const String& payload, uint8_t retries = 1,
                         uint16_t intervalMs = 500, bool isAuto = false) {
@@ -87,7 +87,7 @@ void sendUidWithRetries(const String& payload, uint8_t retries = 1,
   packetId++;
 
   for (uint8_t attempt = 0; attempt < retries; attempt++) {
-    Serial1.println(payload + "|" + String(packetId) + "|" + String(isAuto));
+    Serial1.println(payload + "|" + String(packetId) + "|");
     if (attempt + 1 < retries) {
       delay(intervalMs);
     }
